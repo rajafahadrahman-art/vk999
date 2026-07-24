@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { loadContent } from "@/lib/content";
+import { enhanceArticleHtml, stripFaqFromHtml, extractFinalThoughts } from "@/lib/enhance-html";
 import { siteConfig } from "@/lib/site-config";
 import { buildPageMetadata } from "@/lib/seo";
 import { breadcrumbSchema, faqSchema, webPageSchema } from "@/lib/schema";
@@ -9,6 +10,8 @@ import ResponsiveImage from "@/components/ResponsiveImage";
 import RelatedGuides from "@/components/RelatedGuides";
 import SchemaMarkup from "@/components/SchemaMarkup";
 import TableOfContents from "@/components/TableOfContents";
+import FaqAccordion from "@/components/FaqAccordion";
+import CtaBox from "@/components/CtaBox";
 
 const page = siteConfig.pages.deposit;
 
@@ -22,6 +25,8 @@ export const metadata: Metadata = buildPageMetadata({
 export default function DepositPage() {
   const content = loadContent("vk999-deposit-guide");
   const banner = siteConfig.images.depositBanner;
+  const enhanced = enhanceArticleHtml(stripFaqFromHtml(content.mainHtml || content.bodyHtml));
+  const { body, finalHtml } = extractFinalThoughts(enhanced);
 
   return (
     <main id="main-content">
@@ -57,6 +62,7 @@ export default function DepositPage() {
               title={banner.title}
               width={banner.width}
               height={banner.height}
+              sizes="(max-width: 768px) 100vw, 860px"
             />
           </div>
           <div className="cta-row">
@@ -77,15 +83,34 @@ export default function DepositPage() {
 
       <section className="section">
         <div className="container prose-width">
-          <div
-            className="content-body"
-            dangerouslySetInnerHTML={{ __html: content.bodyHtml }}
-          />
+          <div className="content-body" dangerouslySetInnerHTML={{ __html: body }} />
+
+          <CtaBox
+            heading="Continue with Account Access"
+            actions={[
+              { label: "VK999 Login", href: "/vk999-login/", primary: true },
+              {
+                label: "Withdrawal Guide",
+                href: "/vk999-withdrawal-guide/",
+                primary: false,
+              },
+            ]}
+            note="18+ only. Deposit only through details shown inside the verified account dashboard."
+          >
+            <p>
+              Sign in first if you need account access, or open the withdrawal guide when
+              you are ready to cash out eligible funds.
+            </p>
+          </CtaBox>
+
           <p className="age-note">
-            Sign in help is on the <Link href="/vk999-login/">login page</Link>. Cash-out
-            steps are in the <Link href="/vk999-withdrawal-guide/">withdrawal guide</Link>.
             Platform overview: <Link href="/">homepage</Link>.
           </p>
+
+          <FaqAccordion faqs={content.faqs} />
+          {finalHtml ? (
+            <div className="content-body" dangerouslySetInnerHTML={{ __html: finalHtml }} />
+          ) : null}
         </div>
       </section>
 

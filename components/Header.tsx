@@ -48,8 +48,8 @@ export default function Header() {
 
         <div className="header-actions">
           <ThemeToggle />
-          <Link href="/vk999-download/" className="btn btn-primary">
-            Download
+          <Link href="/vk999-download/" className="btn btn-primary btn-header-download">
+            <span className="btn-label-full">Download</span>
           </Link>
           <button
             type="button"
