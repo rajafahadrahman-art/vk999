@@ -87,6 +87,7 @@ export function markdownToStructuredHtml(markdown: string): {
   let h1 = "";
   let inFaq = false;
   let currentFaq: FaqItem | null = null;
+  let currentFaqHtml = "";
   const usedIds = new Set<string>();
   let i = 0;
 
@@ -107,8 +108,13 @@ export function markdownToStructuredHtml(markdown: string): {
         question: currentFaq.question,
         answer: currentFaq.answer.trim(),
       });
+      const id = uniqueId(currentFaq.question);
+      htmlParts.push(
+        `<details class="faq-item" id="${id}"><summary><span class="faq-question">${inline(currentFaq.question)}</span><span class="faq-icon" aria-hidden="true">+</span></summary><div class="faq-answer">${currentFaqHtml || `<p>${inline(currentFaq.answer.trim())}</p>`}</div></details>`,
+      );
     }
     currentFaq = null;
+    currentFaqHtml = "";
   };
 
   while (i < lines.length) {
@@ -163,16 +169,21 @@ export function markdownToStructuredHtml(markdown: string): {
         htmlParts.push(`<h1 id="${uniqueId(text)}">${inline(text)}</h1>`);
       } else if (level === 2) {
         flushFaq();
+        if (inFaq) {
+          htmlParts.push("</div>");
+        }
         inFaq = text.toLowerCase().includes("frequently asked questions");
         const id = uniqueId(text);
         toc.push({ id, text });
         htmlParts.push(`<h2 id="${id}">${inline(text)}</h2>`);
+        if (inFaq) {
+          htmlParts.push('<div class="faq-list">');
+        }
       } else if (level === 3) {
         if (inFaq) {
           flushFaq();
           currentFaq = { question: text, answer: "" };
-          const id = uniqueId(text);
-          htmlParts.push(`<h3 id="${id}">${inline(text)}</h3>`);
+          currentFaqHtml = "";
         } else {
           flushFaq();
           const id = uniqueId(text);
@@ -198,11 +209,12 @@ export function markdownToStructuredHtml(markdown: string): {
         j++;
       }
       if (items.length >= 3) {
-        htmlParts.push(
-          `<ul>${items.map((item) => `<li>${inline(item)}</li>`).join("")}</ul>`,
-        );
+        const listHtml = `<ul>${items.map((item) => `<li>${inline(item)}</li>`).join("")}</ul>`;
         if (currentFaq) {
           currentFaq.answer += " " + items.join("; ");
+          currentFaqHtml += listHtml;
+        } else {
+          htmlParts.push(listHtml);
         }
         i = j;
         continue;
@@ -210,13 +222,19 @@ export function markdownToStructuredHtml(markdown: string): {
     }
 
     // Numbered step lines already handled as headings mostly; paragraphs
-    htmlParts.push(`<p>${inline(trimmed)}</p>`);
+    const pHtml = `<p>${inline(trimmed)}</p>`;
     if (currentFaq) {
       currentFaq.answer += (currentFaq.answer ? " " : "") + trimmed;
+      currentFaqHtml += pHtml;
+    } else {
+      htmlParts.push(pHtml);
     }
     i++;
   }
   flushFaq();
+  if (inFaq) {
+    htmlParts.push("</div>");
+  }
 
   const html = htmlParts.join("\n");
   // Split intro (after h1 until first h2) and body (from first h2)

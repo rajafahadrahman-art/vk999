@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { loadContent } from "@/lib/content";
+import { enhanceArticleHtml, stripFaqFromHtml, extractFinalThoughts } from "@/lib/enhance-html";
 import { siteConfig } from "@/lib/site-config";
 import { buildPageMetadata } from "@/lib/seo";
 import { breadcrumbSchema, faqSchema, webPageSchema } from "@/lib/schema";
@@ -9,6 +10,8 @@ import ResponsiveImage from "@/components/ResponsiveImage";
 import RelatedGuides from "@/components/RelatedGuides";
 import SchemaMarkup from "@/components/SchemaMarkup";
 import TableOfContents from "@/components/TableOfContents";
+import FaqAccordion from "@/components/FaqAccordion";
+import CtaBox from "@/components/CtaBox";
 
 const page = siteConfig.pages.withdrawal;
 
@@ -22,6 +25,8 @@ export const metadata: Metadata = buildPageMetadata({
 export default function WithdrawalPage() {
   const content = loadContent("vk999-withdrawal-guide");
   const banner = siteConfig.images.withdrawalBanner;
+  const enhanced = enhanceArticleHtml(stripFaqFromHtml(content.mainHtml || content.bodyHtml));
+  const { body, finalHtml } = extractFinalThoughts(enhanced);
 
   return (
     <main id="main-content">
@@ -57,6 +62,7 @@ export default function WithdrawalPage() {
               title={banner.title}
               width={banner.width}
               height={banner.height}
+              sizes="(max-width: 768px) 100vw, 860px"
             />
           </div>
           <div className="cta-row">
@@ -77,15 +83,30 @@ export default function WithdrawalPage() {
 
       <section className="section">
         <div className="container prose-width">
-          <div
-            className="content-body"
-            dangerouslySetInnerHTML={{ __html: content.bodyHtml }}
-          />
+          <div className="content-body" dangerouslySetInnerHTML={{ __html: body }} />
+
+          <CtaBox
+            heading="Need Login or Deposit Help?"
+            actions={[
+              { label: "VK999 Login", href: "/vk999-login/", primary: true },
+              { label: "Deposit Guide", href: "/vk999-deposit-guide/", primary: false },
+            ]}
+            note="18+ only. Never share passwords, OTPs or withdrawal PINs."
+          >
+            <p>
+              Use the login guide for account access issues, or the deposit guide if you
+              need to add funds before requesting a withdrawal.
+            </p>
+          </CtaBox>
+
           <p className="age-note">
-            Account access: <Link href="/vk999-login/">VK999 Login</Link>. Adding funds:{" "}
-            <Link href="/vk999-deposit-guide/">Deposit Guide</Link>. Overview:{" "}
-            <Link href="/">homepage</Link>.
+            Overview: <Link href="/">homepage</Link>.
           </p>
+
+          <FaqAccordion faqs={content.faqs} />
+          {finalHtml ? (
+            <div className="content-body" dangerouslySetInnerHTML={{ __html: finalHtml }} />
+          ) : null}
         </div>
       </section>
 

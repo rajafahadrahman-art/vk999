@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { loadContent } from "@/lib/content";
+import { enhanceArticleHtml, splitAfterHeading, extractFinalThoughts } from "@/lib/enhance-html";
 import { siteConfig } from "@/lib/site-config";
 import { buildPageMetadata } from "@/lib/seo";
 import {
@@ -13,6 +14,8 @@ import ResponsiveImage from "@/components/ResponsiveImage";
 import TableOfContents from "@/components/TableOfContents";
 import RelatedGuides from "@/components/RelatedGuides";
 import SchemaMarkup from "@/components/SchemaMarkup";
+import FaqAccordion from "@/components/FaqAccordion";
+import CtaBox from "@/components/CtaBox";
 
 const page = siteConfig.pages.home;
 
@@ -30,6 +33,11 @@ export default function HomePage() {
   const introParts = content.introHtml.match(/<p>[\s\S]*?<\/p>/g) || [];
   const openingHtml = introParts[0] || "";
   const restIntroHtml = introParts.slice(1).join("\n");
+  const enhancedMain = enhanceArticleHtml(content.mainHtml);
+  const { body: mainWithoutFinal, finalHtml } = extractFinalThoughts(enhancedMain);
+  const split = splitAfterHeading(mainWithoutFinal, "games-available");
+  const beforeFeatured = split?.before || mainWithoutFinal;
+  const afterFeatured = split?.after || "";
 
   return (
     <main id="main-content">
@@ -82,19 +90,48 @@ export default function HomePage() {
       <section className="section">
         <div className="container prose-width">
           <div className="content-body" dangerouslySetInnerHTML={{ __html: restIntroHtml }} />
-          <div className="cta-row">
-            <Link href="/vk999-download/" className="btn btn-primary">
-              Download VK999
-            </Link>
-            <Link href="/vk999-login/" className="btn btn-secondary">
-              VK999 Login
-            </Link>
-          </div>
           <TableOfContents items={content.toc} />
           <div
             className="content-body"
-            dangerouslySetInnerHTML={{ __html: content.mainHtml }}
+            dangerouslySetInnerHTML={{ __html: beforeFeatured }}
           />
+
+          <figure className="featured-figure">
+            <div className="banner-frame">
+              <ResponsiveImage
+                src={featured.src}
+                alt={featured.alt}
+                title={featured.title}
+                width={featured.width}
+                height={featured.height}
+                sizes="(max-width: 768px) 100vw, 860px"
+              />
+            </div>
+            <figcaption className="featured-caption">
+              VK999 game app overview for Android users in Pakistan
+            </figcaption>
+          </figure>
+
+          {afterFeatured ? (
+            <div
+              className="content-body"
+              dangerouslySetInnerHTML={{ __html: afterFeatured }}
+            />
+          ) : null}
+
+          <CtaBox
+            heading="Ready to Get Started?"
+            actions={[
+              { label: "Download VK999", href: "/vk999-download/", primary: true },
+              { label: "VK999 Login", href: "/vk999-login/", primary: false },
+            ]}
+            note="18+ only. vk999apk.pk is an independent informational guide website."
+          >
+            <p>
+              Continue to the download guide to install the Android APK, or open the login
+              guide for registration and account access help.
+            </p>
+          </CtaBox>
         </div>
       </section>
 
@@ -133,29 +170,15 @@ export default function HomePage() {
 
       <section className="section">
         <div className="container prose-width">
-          <div className="banner-frame">
-            <ResponsiveImage
-              src={featured.src}
-              alt={featured.alt}
-              title={featured.title}
-              width={featured.width}
-              height={featured.height}
-              sizes="(max-width: 768px) 100vw, 720px"
-            />
-          </div>
-        </div>
-      </section>
-
-      {content.faqHtml ? (
-        <section className="section">
-          <div className="container prose-width">
+          <FaqAccordion faqs={content.faqs} />
+          {finalHtml ? (
             <div
               className="content-body"
-              dangerouslySetInnerHTML={{ __html: content.faqHtml }}
+              dangerouslySetInnerHTML={{ __html: finalHtml }}
             />
-          </div>
-        </section>
-      ) : null}
+          ) : null}
+        </div>
+      </section>
 
       <RelatedGuides currentSlug="home" />
 

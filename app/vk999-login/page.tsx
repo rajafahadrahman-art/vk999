@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { loadContent } from "@/lib/content";
+import { enhanceArticleHtml, stripFaqFromHtml, extractFinalThoughts } from "@/lib/enhance-html";
 import { siteConfig } from "@/lib/site-config";
 import { buildPageMetadata } from "@/lib/seo";
 import { breadcrumbSchema, faqSchema, webPageSchema } from "@/lib/schema";
@@ -9,6 +10,8 @@ import ResponsiveImage from "@/components/ResponsiveImage";
 import RelatedGuides from "@/components/RelatedGuides";
 import SchemaMarkup from "@/components/SchemaMarkup";
 import TableOfContents from "@/components/TableOfContents";
+import FaqAccordion from "@/components/FaqAccordion";
+import CtaBox from "@/components/CtaBox";
 
 const page = siteConfig.pages.login;
 
@@ -22,6 +25,8 @@ export const metadata: Metadata = buildPageMetadata({
 export default function LoginPage() {
   const content = loadContent("vk999-login");
   const banner = siteConfig.images.loginBanner;
+  const enhanced = enhanceArticleHtml(stripFaqFromHtml(content.mainHtml || content.bodyHtml));
+  const { body, finalHtml } = extractFinalThoughts(enhanced);
 
   return (
     <main id="main-content">
@@ -57,6 +62,7 @@ export default function LoginPage() {
               title={banner.title}
               width={banner.width}
               height={banner.height}
+              sizes="(max-width: 768px) 100vw, 860px"
             />
           </div>
           <div className="cta-row">
@@ -77,16 +83,31 @@ export default function LoginPage() {
 
       <section className="section">
         <div className="container prose-width">
-          <div
-            className="content-body"
-            dangerouslySetInnerHTML={{ __html: content.bodyHtml }}
-          />
+          <div className="content-body" dangerouslySetInnerHTML={{ __html: body }} />
+
+          <CtaBox
+            heading="Need the App First?"
+            actions={[
+              { label: "VK999 Download", href: "/vk999-download/", primary: true },
+              { label: "Deposit Guide", href: "/vk999-deposit-guide/", primary: false },
+            ]}
+          >
+            <p>
+              If you have not installed the application yet, open the download guide before
+              creating or signing into an account.
+            </p>
+          </CtaBox>
+
           <p className="age-note">
-            Need the app first? Visit the <Link href="/vk999-download/">download page</Link>.
-            Ready to add funds? Read the{" "}
+            Ready to add funds after signing in? Read the{" "}
             <Link href="/vk999-deposit-guide/">deposit guide</Link>. Return to the{" "}
             <Link href="/">homepage</Link> for a full platform overview.
           </p>
+
+          <FaqAccordion faqs={content.faqs} />
+          {finalHtml ? (
+            <div className="content-body" dangerouslySetInnerHTML={{ __html: finalHtml }} />
+          ) : null}
         </div>
       </section>
 
