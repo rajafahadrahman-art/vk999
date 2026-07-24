@@ -4,7 +4,6 @@ import { loadContent } from "@/lib/content";
 import { siteConfig } from "@/lib/site-config";
 import { buildPageMetadata } from "@/lib/seo";
 import {
-  breadcrumbSchema,
   faqSchema,
   organizationSchema,
   webPageSchema,
@@ -43,7 +42,6 @@ export default function HomePage() {
             description: page.description,
             path: page.path,
           }),
-          breadcrumbSchema([{ name: "Home", path: "/" }]),
           faqSchema(content.faqs),
         ]}
       />

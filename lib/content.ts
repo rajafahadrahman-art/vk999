@@ -87,12 +87,12 @@ export function markdownToStructuredHtml(markdown: string): {
   let h1 = "";
   let inFaq = false;
   let currentFaq: FaqItem | null = null;
-  let usedIds = new Set<string>();
+  const usedIds = new Set<string>();
   let i = 0;
 
   const uniqueId = (text: string) => {
     let id = slugify(text) || "section";
-    let base = id;
+    const base = id;
     let n = 2;
     while (usedIds.has(id)) {
       id = `${base}-${n++}`;

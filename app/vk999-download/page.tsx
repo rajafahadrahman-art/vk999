@@ -87,10 +87,39 @@ export default function DownloadPage() {
 
       <section className="section">
         <div className="container prose-width">
-          <div
-            className="content-body"
-            dangerouslySetInnerHTML={{ __html: content.bodyHtml }}
-          />
+          {(() => {
+            const marker = '<h2 id="apk-requirements">';
+            const idx = content.bodyHtml.indexOf(marker);
+            if (idx === -1) {
+              return (
+                <div
+                  className="content-body"
+                  dangerouslySetInnerHTML={{ __html: content.bodyHtml }}
+                />
+              );
+            }
+            const before = content.bodyHtml.slice(0, idx);
+            const after = content.bodyHtml.slice(idx);
+            return (
+              <>
+                <div
+                  className="content-body"
+                  dangerouslySetInnerHTML={{ __html: before }}
+                />
+                <div className="cta-row">
+                  <DownloadButton label="Download VK999 APK" />
+                </div>
+                <p className="age-note">
+                  18+ only. Install only from the intended download source and review Android
+                  permissions carefully.
+                </p>
+                <div
+                  className="content-body"
+                  dangerouslySetInnerHTML={{ __html: after }}
+                />
+              </>
+            );
+          })()}
           <div className="cta-row" style={{ marginTop: "1.5rem" }}>
             <DownloadButton label="Download VK999 APK" />
           </div>
@@ -99,9 +128,6 @@ export default function DownloadPage() {
             <Link href="/vk999-login/">VK999 Login</Link> guide or return to the{" "}
             <Link href="/">homepage</Link>.
           </p>
-          <div className="cta-row">
-            <DownloadButton />
-          </div>
         </div>
       </section>
 
