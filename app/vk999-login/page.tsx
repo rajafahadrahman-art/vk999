@@ -69,9 +69,14 @@ export default function LoginPage() {
             <Link href="/vk999-download/" className="btn btn-primary">
               Get VK999 Download
             </Link>
-            <Link href="/vk999-deposit-guide/" className="btn btn-secondary">
-              Deposit Guide
-            </Link>
+            <a
+              href={siteConfig.downloadUrl}
+              className="btn btn-secondary"
+              target="_blank"
+              rel="sponsored nofollow noopener noreferrer"
+            >
+              Login Now
+            </a>
           </div>
           <div
             className="content-body"

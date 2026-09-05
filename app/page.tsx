@@ -16,6 +16,7 @@ import RelatedGuides from "@/components/RelatedGuides";
 import SchemaMarkup from "@/components/SchemaMarkup";
 import FaqAccordion from "@/components/FaqAccordion";
 import CtaBox from "@/components/CtaBox";
+import DownloadButton from "@/components/DownloadButton";
 
 const page = siteConfig.pages.home;
 
@@ -38,6 +39,11 @@ export default function HomePage() {
   const split = splitAfterHeading(mainWithoutFinal, "games-available");
   const beforeFeatured = split?.before || mainWithoutFinal;
   const afterFeatured = split?.after || "";
+  const registrationMarker = '<h2 id="registration-overview">';
+  const registrationIdx = afterFeatured.indexOf(registrationMarker);
+  const beforeRegistration =
+    registrationIdx === -1 ? afterFeatured : afterFeatured.slice(0, registrationIdx);
+  const fromRegistration = registrationIdx === -1 ? "" : afterFeatured.slice(registrationIdx);
 
   return (
     <main id="main-content">
@@ -112,10 +118,23 @@ export default function HomePage() {
             </figcaption>
           </figure>
 
-          {afterFeatured ? (
+          {beforeRegistration ? (
             <div
               className="content-body"
-              dangerouslySetInnerHTML={{ __html: afterFeatured }}
+              dangerouslySetInnerHTML={{ __html: beforeRegistration }}
+            />
+          ) : null}
+
+          {registrationIdx !== -1 ? (
+            <div className="cta-row">
+              <DownloadButton label="Download Now" />
+            </div>
+          ) : null}
+
+          {fromRegistration ? (
+            <div
+              className="content-body"
+              dangerouslySetInnerHTML={{ __html: fromRegistration }}
             />
           ) : null}
 
