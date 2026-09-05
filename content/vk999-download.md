@@ -56,7 +56,7 @@ Check that the device date and time are correct.
 After preparation, users can continue with the installation process explained below.
 ## How to Download VK999 Game APK
 ### Step 1: Open the Download Page
-Open [vk999 game download/](/vk999-download/) page in anu mobile browser. Chrome or another trusted Android browser can be used.
+Open [vk999 game download](/vk999-download/) page in anu mobile browser. Chrome or another trusted Android browser can be used.
 Check the page address carefully before selecting any button. Lookalike websites may copy an app name while providing a different file.
 ### Step 2: Find the APK Download Button
 Scroll to the download section and locate the main APK button. The button should clearly indicate that it is intended for Android.
