@@ -160,7 +160,7 @@ The download page covers installation-specific questions, while the login page h
 ### What is VK999 Game?
 VK 999 is an online gaming platform that may provide card games, table games, slot-style titles, live sections and quick-result entertainment through one account.
 ### Is game available for Android?
-The platform is mainly associated with Android access. Users should check the [VK999 Download](/vk999-download/) page for the latest installation requirements and file information.
+The platform is mainly associated with Android access. Users should check the Download page for the latest installation requirements and file information.
 ### Can I access platform without installing an app?
 Online or browser-based access may be available in some versions. Users should use only a verified platform address and avoid entering account details on unofficial websites.
 ### Which games can be found on the platform?
@@ -168,9 +168,9 @@ The available catalogue may include Teen Patti-style tables, Andar Bahar, Dragon
 ### Does platform support Pakistani payment methods?
 Local payment methods may appear inside certain versions, but users should verify the currently supported options in their account before making a transaction.
 ### Where can I find the installation steps?
-The complete installation process is available on [VK999 Download](/vk999-download/) page.
+The complete installation process is available on separate Download page.
 ### How can I register or sign in?
-Account creation and login troubleshooting are explained on the [VK999 Login](/vk999-login/) page.
+Account creation and login troubleshooting are explained on the Login page.
 ### Are promotional rewards always available?
 No. Promotions can change, expire or be limited to eligible users. Every offer should be reviewed together with its current terms and conditions.
 ## Final Thoughts
