@@ -4,7 +4,7 @@ export const siteConfig = {
   domain: "https://vk999apk.pk",
   metadataBase: new URL("https://vk999apk.pk"),
   contactEmail: "contact@vk999apk.pk",
-  downloadUrl: "https://444y999.com/?dl=9hxmxr",
+  downloadUrl: "https://www.555p999.com/?dl=ctperw",
   locale: "en_PK",
   themeColor: "#0f3d23",
   backgroundColor: "#0a120e",
